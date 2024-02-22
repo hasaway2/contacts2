@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="main.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <style>
+    #pagination {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <title>게시판 - 목록</title>
+  <script>
+    function getPagination({pageno, pagesize, totalcount}) {
+      const countOfPage = Math.floor((totalcount-1)/pagesize)+1;
+      const sizeOfBlock = 5;
+      const prev = Math.floor((pageno-1)/sizeOfBlock)*5;
+      const start = prev + 1;
+      let end = prev + sizeOfBlock;
+      let next = end + 1;
+      if(end>=countOfPage) {
+        end = countOfPage;
+        next = 0;
+      }
+      return {prev, start, end, next, pageno};
+    }
+
+    function printPagination({prev, start, end, next, pageno}) {
+      const $ul = $('#pagination ul');
+      if(prev>0) {
+        const html = `<li class="page-item"><a class="page-link" href="list.html?pageno=${prev}">이전으로</a></li>`;
+        $ul.append(html);
+      }
+      for(let i=start; i<=end; i++) {
+        if(i===pageno) {
+          const html = `<li class="page-item active"><a class="page-link" href="list.html?pageno=${i}">${i}</a></li>`;
+          $ul.append(html);
+        } else {
+          const html = `<li class="page-item"><a class="page-link" href="list.html?pageno=${i}">${i}</a></li>`;
+          $ul.append(html);
+        }
+      }
+      if(next>0) {
+        const html = `<li class="page-item"><a class="page-link" href="list.html?pageno=${next}">다음으로</a></li>`;
+        $ul.append(html);
+      }
+    }
+
+    function printContacts(contacts) {
+      const $tbody = $('#tbody');
+      for(let c of contacts) {
+        let html = `
+          <tr>
+            <td>${c.no}</td>
+            <td>
+              <a href="read.html?no=${c.no}">${c.name}</a>
+            </td>
+            <td>${c.address}</td>
+            <td>${c.tel}</td>
+          </tr>
+        `;
+        $tbody.append(html);
+      }
+    }
+
+    $(document).ready(function() {
+      const searchParams = new URLSearchParams(location.search);
+      let pageno = searchParams.get('pageno');
+      if(pageno==null) {
+        pageno = 1;
+      }
+      const params = {
+        pageno:pageno,
+        pagesize:10
+      }
+
+      $.ajax({
+        url:`https://sample.bmaster.kro.kr/contacts`,
+        data: params,
+        success:function(result) {
+          console.log(result)
+          const p = getPagination(result)
+          printPagination(p);
+          printContacts(result.contacts);
+        }
+      })
+    });
+  </script>
+</head>
+<body>
+  <div id="page">
+    <header>
+      <h1>글목록</h1>
+      <div id="search">
+        <input type="text" placeholder="검색어를 입력하세요">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="list.html">HOME</a></li>
+        <li><a href="write.html">WRITE</a></li>
+      </ul>
+    </nav>
+    <main>
+      <aside>
+      </aside>
+      <section>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>이름</th>
+              <th>주소</th>
+              <th>연락처</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+          </tbody>
+        </table>
+        <div id="pagination">
+          <ul class="pagination">
+          </ul>
+        </div>
+      </section>
+      <aside>
+      </aside>
+    </main>
+    <footer>
+      copyright &copy;2024 All Right Reserved
+    </footer>
+  </div>
+</body>
+</html>

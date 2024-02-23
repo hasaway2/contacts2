@@ -30,6 +30,8 @@
     }
 
     function printPagination({prev, start, end, next, pageno}) {
+      // a b : 하위(자손)선택자. a 내부의 b
+      // a>b : 자식선택자. a의 자식인 b
       const $ul = $('#pagination ul');
       if(prev>0) {
         const html = `<li class="page-item"><a class="page-link" href="list.html?pageno=${prev}">이전으로</a></li>`;
@@ -50,7 +52,7 @@
       }
     }
 
-    function printContacts(contacts) {
+    function printContact(contacts) {
       const $tbody = $('#tbody');
       for(let c of contacts) {
         let html = `
@@ -67,27 +69,21 @@
       }
     }
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
+      const pagesize = 10;
       const searchParams = new URLSearchParams(location.search);
       let pageno = searchParams.get('pageno');
       if(pageno==null) {
         pageno = 1;
       }
-      const params = {
-        pageno:pageno,
-        pagesize:10
+      try {
+        const result = await $.ajax(`http://sample.bmaster.kro.kr/contacts?pageno=${pageno}&pagesize=${pagesize}`);
+        const pagination = getPagination(result);
+        printPagination(pagination);
+        printContact(result.contacts);        
+      } catch(err) {
+        console.log(err);
       }
-
-      $.ajax({
-        url:`https://sample.bmaster.kro.kr/contacts`,
-        data: params,
-        success:function(result) {
-          console.log(result)
-          const p = getPagination(result)
-          printPagination(p);
-          printContacts(result.contacts);
-        }
-      })
     });
   </script>
 </head>

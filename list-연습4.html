@@ -1,0 +1,37 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    // 비동기작업을 순서있게 실행하려면 -> 콜백지옥
+    // 콜백지옥을 해소하기 위해 등장한 개념
+    // Promise: 나중에 받아올 비동기코드의 결과값을 상징하는 객체
+    // await : Promise의 값이 정해질 때까지 대기해라
+    // await를 실행하는 함수는 async라고 지정해야 한다
+
+    // 오류가 발생하면 실행을 중지하고 오류메시지를 찍어라
+    $(document).ready(async function() {
+      try {
+        // try로 코드를 감싼다
+        const result = await $.ajax('http://sample.bmaster.kro.kr/contacts');
+        console.log(result);
+      } catch(err) {
+        // try에서 오류가 발생하면 catch로 이동
+        // 오류정보는 err 객체에 들어있다
+        console.log(err);
+      }
+    });
+  </script>
+  <style>
+    #pagination {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <body>
+    <table>
+    </table>
+    <div id="pagination">
+      <ul class="pagination">
+      </ul>
+    </div>
+  </body>
+</html>

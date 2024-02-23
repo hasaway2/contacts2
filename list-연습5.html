@@ -1,0 +1,80 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    function getPagination({pageno,pagesize,totalcount,blockSize=5}) {
+      const 페이지=Math.floor((totalcount-1)/pagesize)+1;
+      const prev=Math.floor((pageno-1)/blockSize)*blockSize;
+      const start=prev+1;
+      let end=prev+blockSize;
+      let next=end+1;
+      if(end>=페이지) {
+        end = 페이지;
+        next = 0;
+      }
+      return {prev,start,end,next,pageno};
+    }
+
+    function printPagination({prev,start,end,next,pageno}) {
+
+      const $ul = $('#pagination ul');
+      if(prev>0) {
+        const h=`
+        <li class="page-item">
+          <a class="page-link" href="list.html?pageno=${prev}">PREV</a>
+        </li>`;
+        $ul.append(h);
+      }
+      for(let i=start; i<=end; i++) {
+        if(i==pageno) {
+          const h=`
+<li class="page-item active">
+  <a class="page-link" href="list.html?pageno=${i}">${i}</a>
+</li>`;
+$ul.append(h);
+        } else {
+          const h=`
+<li class="page-item">
+  <a class="page-link" href="list.html?pageno=${i}">${i}</a>
+</li>`;
+$ul.append(h);
+        }
+      }
+      if(next>0) {
+        const h=`
+        <li class="page-item">
+          <a class="page-link" href="list.html?pageno=${next}">NEXT</a>
+        </li>`;
+        $ul.append(h);
+      }
+    }
+
+    function printContact(contacts) {
+
+    }
+
+    $(document).ready(async function() {
+      try {
+        const result = await $.ajax('http://sample.bmaster.kro.kr/contacts');
+        const pagination = getPagination(result);
+        printPagination(pagination);
+        printContact(result.contacts);        
+      } catch(err) {
+        console.log(err);
+      }
+    });
+  </script>
+  <style>
+    #pagination {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <body>
+    <table>
+    </table>
+    <div id="pagination">
+      <ul class="pagination">
+      </ul>
+    </div>
+  </body>
+</html>

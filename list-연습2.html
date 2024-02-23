@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script>
+      // 글의 개수가 123개라고 하자
+      // 그러면                   prev  start  end  next
+      //      1 2 3 4 5 next      0     1      5    6
+      // prev 6 7 8 9 10 next     5     6      10   11
+      // prev 11 12 13            10    11     13   0
+
+
+      // prev계산하기
+      // pageno          pageno-1    prev:Math.floor((pageno-1)/5)
+      // 1 2 3 4 5       0-4            0 *5-> 0
+      // 6 7 8 9 10      5-9            1 *5-> 5
+      // 11 12 13        10-12          2 *5-> 10 
+      for(let pageno=1; pageno<=13; pageno++) {
+        const prev = Math.floor((pageno-1)/5)*5;
+        console.log(`pageno:${pageno} - prev:${prev}`);
+      }
+    </script>
+  </head>
+</html>

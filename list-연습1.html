@@ -1,0 +1,33 @@
+<html>
+  <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+    // API 서버의 응답과 페이지의 개수
+    // API 서버에 요청하는 형식 : 개발자가 알아내야 한다
+    //    pageno, pagesize, totalcount, contacts
+    $.ajax({
+      url:'http://sample.bmaster.kro.kr/contacts?pageno=1&pagesize=10',
+      success:function(result) {
+        // 구조분해할당
+        // 객체를 변수들로, 변수들을 객체로 변환
+        const {pageno, pagesize, totalcount, contacts} = result;
+        
+        const 페이지개수 = Math.floor((totalcount-1)/pagesize) + 1;
+        // 글의 개수      페이지의 개수
+        // 99             10
+        // 100            10
+        // 101            11
+        // 102            11
+        // 103 ->         11
+        for(let i=99; i<=103; i++) {
+          const 개수 = Math.floor((i-1)/10)+1;
+          console.log(개수);
+        }
+      }
+    })
+  </script>
+  </head>
+  <body>
+
+  </body>
+</html>
